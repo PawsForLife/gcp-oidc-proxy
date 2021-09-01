@@ -118,6 +118,17 @@ def handle_request(proxied_request):
     headers = _strip_hop_by_hop_headers(resp.headers)
     headers.pop('Content-Encoding', None)
 
+    # This block is here to make sure we are indeed hitting the correct service.
+    # If we want to add more services behind IAP and create health check for it, 
+    # we need to update this section accordingly!!
+    if 'spaniel' in resp.url and '<title>Spaniel</title>' not in str(resp.content):
+        raise NameError('Looks like you did not hit Spaniel!! Please debug.')
+    elif 'MinPin' in resp.url and 'Minpin' not in str(resp.content):
+        raise NameError('Looks like you did not hit MinPin!! Please debug.')
+    elif resp.url.endswith('iap.thepaw.com.au/') and '<title>Welcome to your Strapi app</title>' not in str(resp.content):
+        raise NameError(
+            'Looks like you did not hit CMS (Strapi) !! Please debug.')
+
     return resp.content, resp.status_code, headers.items()
 
 

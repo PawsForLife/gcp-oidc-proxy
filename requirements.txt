@@ -1,4 +1,4 @@
 google-auth
 google-oauth
 requests
-pyjwt
+pyjwt==1.7.1
